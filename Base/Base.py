@@ -92,6 +92,7 @@ def get_gif_html(env_videos, title, subtitle_eps=None, max_n_videos=4):
                  '-vf', 'scale=512:-1',
                  '-'), 
                 stdout=subprocess.PIPE)
+            output = subprocess.check_output(
                 ('convert',
                  '-coalesce',
                  '-delay', '7',

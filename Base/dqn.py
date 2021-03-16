@@ -48,48 +48,7 @@ class DQN():
     def update_network(self):
         for target, online in zip(self.target_model.parameters(), self.online_model.parameters()):
             target.data.copy_(online.data) 
-    def save_checkpoint(self, ep_idx, model):
-        torch.save(model.state_dict(),os.path.join(self.checkpoint_dir, 'model.{}.tar'.format(ep_idx)))
-        log.info('cleaned paths')
-        log.info(self.get_cleaned_checkpoints())
-
-    def get_cleaned_checkpoints(self, n_checkpoints=5):
-        try:
-            return self.checkpoint_paths
-        except AttributeError:
-            self.checkpoint_paths = {}
-
-        paths = glob.glob(os.path.join(self.checkpoint_dir,'*.tar'))
-        paths_dict = {int(path.split('.')[-2]):path for path in paths}
-        last_ep = max(paths_dict.keys())
-        checkpoint_idxs = np.linspace(1, last_ep+1, n_checkpoints, endpoint=True, dtype=np.int)-1
-
-        for idx, path in paths_dict.items():
-            if idx in checkpoint_idxs:
-                self.checkpoint_paths[idx] = path
-            else:
-                os.unlink(path)
-
-        return self.checkpoint_paths
-
-    def demo_last(self, title='Fully-trained {} Agent', n_episodes=3, max_n_videos=3):
-        env = self.make_env_fn(**self.make_env_kargs, monitor_mode='evaluation', render=True, record=True)
-        checkpoint_paths = self.get_cleaned_checkpoints()
-        last_ep = max(self.checkpoint_paths.keys())
-        self.online_model.load_state_dict(torch.load(checkpoint_paths[last_ep]))
-        env.close()
-        data = get_gif_html(env_videos=env.videos, 
-                            title=title.format(self.__class__.__name__),
-                            subtitle_eps=sorted(checkpoint_paths.keys()),
-                            max_n_videos=max_n_videos)
-        del env
-        return HTML(data=data)        
-
-
-
-
     
-
     def train(self, make_env_fn, make_env_kargs, seed, gamma, 
               max_minutes, max_episodes, goal_mean_100_reward):
         training_start, last_debug_time = time.time(), float('-inf')
@@ -142,12 +101,49 @@ class DQN():
             log.info('episode1: '+str(episode))
         return result
 
+    def get_cleaned_checkpoints(self, n_checkpoints=5):
+        try: 
+            return self.checkpoint_paths
+        except AttributeError:
+            self.checkpoint_paths = {}
+
+        paths = glob.glob(os.path.join(self.checkpoint_dir, '*.tar'))
+        paths_dic = {int(path.split('.')[-2]):path for path in paths}
+        last_ep = max(paths_dic.keys())
+        # checkpoint_idxs = np.geomspace(1, last_ep+1, n_checkpoints, endpoint=True, dtype=np.int)-1
+        checkpoint_idxs = np.linspace(1, last_ep+1, n_checkpoints, endpoint=True, dtype=np.int)-1
+
+        for idx, path in paths_dic.items():
+            if idx in checkpoint_idxs:
+                self.checkpoint_paths[idx] = path
+            else:
+                os.unlink(path)
+
+        return self.checkpoint_paths
+
+    def demo_last(self, title='Fully-trained {} Agent', n_episodes=3, max_n_videos=3):
+        env = self.make_env_fn(**self.make_env_kargs, monitor_mode='evaluation', render=True, record=True)
+
+        checkpoint_paths = self.get_cleaned_checkpoints()
+        last_ep = max(checkpoint_paths.keys())
+        self.online_model.load_state_dict(torch.load(checkpoint_paths[last_ep]))
+
+        self.evaluate(self.online_model, env, n_episodes=n_episodes)
+        env.close()
+        data = get_gif_html(env_videos=env.videos, 
+                            title=title.format(self.__class__.__name__),
+                            max_n_videos=max_n_videos)
+        del env
+        return HTML(data=data)
+
     def demo_progression(self, title='{} Agent progression', max_n_videos=5):
         env = self.make_env_fn(**self.make_env_kargs, monitor_mode='evaluation', render=True, record=True)
 
         checkpoint_paths = self.get_cleaned_checkpoints()
         for i in sorted(checkpoint_paths.keys()):
             self.online_model.load_state_dict(torch.load(checkpoint_paths[i]))
+            self.evaluate(self.online_model, env, n_episodes=1)
+
         env.close()
         data = get_gif_html(env_videos=env.videos, 
                             title=title.format(self.__class__.__name__),
@@ -155,5 +151,21 @@ class DQN():
                             max_n_videos=max_n_videos)
         del env
         return HTML(data=data)
+
+    def save_checkpoint(self, episode_idx, model):
+        torch.save(model.state_dict(), 
+                   os.path.join(self.checkpoint_dir, 'model.{}.tar'.format(episode_idx)))
+
+    def evaluate(self, eval_policy_model, eval_env, n_episodes=1):
+        rs = []
+        for _ in range(n_episodes):
+            s, d = eval_env.reset(), False
+            rs.append(0)
+            for _ in count():
+                a = self.evaluation_strategy.select_action(eval_policy_model, s)
+                s, r, d, _ = eval_env.step(a)
+                rs[-1] += r
+                if d: break
+        return np.mean(rs), np.std(rs)
 
         
