@@ -1,0 +1,142 @@
+03/14/2021 12:42:35 PM Started
+03/14/2021 12:42:37 PM test
+03/14/2021 12:47:03 PM Started
+03/14/2021 12:47:03 PM test
+03/14/2021 12:47:21 PM Started
+03/14/2021 12:47:21 PM test
+03/14/2021 12:48:24 PM test
+03/14/2021 12:49:00 PM test
+03/14/2021 12:49:22 PM test
+03/14/2021 12:51:26 PM test
+03/14/2021 12:52:37 PM Started
+03/14/2021 12:52:37 PM test1
+03/14/2021 12:53:04 PM Started
+03/14/2021 12:53:28 PM Started
+03/14/2021 12:53:28 PM episodes: 1
+03/14/2021 12:54:56 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 12:54:56 PM episodes: 1
+03/14/2021 12:56:08 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 12:56:08 PM episodes: 1
+03/14/2021 01:17:51 PM Started
+03/14/2021 01:17:51 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 01:17:51 PM episode1: 1
+03/14/2021 01:18:14 PM Started
+03/14/2021 01:18:14 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 01:18:14 PM episode1: 1
+03/14/2021 01:25:27 PM Started
+03/14/2021 01:25:27 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 01:25:27 PM episode1: 1
+03/14/2021 01:25:27 PM /tmp/tmpx5tyskr7
+03/14/2021 01:31:05 PM Started
+03/14/2021 01:34:44 PM Started
+03/14/2021 01:36:06 PM Started
+03/14/2021 01:36:40 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 01:36:40 PM episode1: 1
+03/14/2021 01:36:40 PM /tmp/tmpqi2e0qwy
+03/14/2021 01:54:12 PM Started
+03/14/2021 01:54:12 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 01:54:13 PM episode1: 1
+03/14/2021 01:54:13 PM /tmp/tmp5zot21vh
+03/14/2021 01:54:40 PM Started
+03/14/2021 01:54:40 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 01:54:40 PM episode1: 1
+03/14/2021 01:54:40 PM /tmp/tmpqieaxd4g
+03/14/2021 01:54:42 PM Started
+03/14/2021 01:54:42 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 01:54:42 PM episode1: 1
+03/14/2021 01:54:42 PM /tmp/tmpy9vobw7j
+03/14/2021 01:55:33 PM Started
+03/14/2021 01:55:33 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 01:55:33 PM episode1: 1
+03/14/2021 01:55:33 PM /tmp/tmp4028u1rc
+03/14/2021 01:55:39 PM Started
+03/14/2021 01:55:39 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 01:55:39 PM episode1: 1
+03/14/2021 01:55:39 PM /tmp/tmp562r8h7k
+03/14/2021 01:56:00 PM Started
+03/14/2021 01:56:00 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 01:56:01 PM episode1: 1
+03/14/2021 01:56:01 PM /tmp/tmpex48pp1v
+03/14/2021 01:56:21 PM Started
+03/14/2021 01:56:21 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 01:56:21 PM episode1: 1
+03/14/2021 01:56:21 PM /tmp/tmphig432ww
+03/14/2021 01:56:45 PM Started
+03/14/2021 01:56:45 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 01:56:45 PM episode1: 1
+03/14/2021 01:57:41 PM Started
+03/14/2021 01:57:41 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 01:58:20 PM Started
+03/14/2021 01:58:20 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 01:58:20 PM cleaned paths
+03/14/2021 01:59:11 PM Started
+03/14/2021 01:59:11 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 01:59:11 PM cleaned paths
+03/14/2021 01:59:46 PM Started
+03/14/2021 01:59:46 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 01:59:46 PM cleaned paths
+03/14/2021 01:59:46 PM {0: '/tmp/tmplzb7kil4/model.0.tar'}
+03/14/2021 01:59:46 PM episode1: 1
+03/14/2021 02:11:14 PM Started
+03/14/2021 02:11:14 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 02:11:14 PM cleaned paths
+03/14/2021 02:11:14 PM {0: '/tmp/tmpzct0w509/model.0.tar'}
+03/14/2021 02:11:14 PM episode1: 1
+03/14/2021 02:11:22 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/14/2021 02:11:22 PM cleaned paths
+03/14/2021 02:11:22 PM {0: '/tmp/tmpu_0m87l2/model.0.tar'}
+03/14/2021 02:11:22 PM episode1: 1
+03/16/2021 12:48:17 PM Started
+03/16/2021 12:48:17 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 3, 'goal_mean_100_reward': 475}
+03/16/2021 12:48:17 PM cleaned paths
+03/16/2021 12:48:17 PM {0: '/tmp/tmpoe93krt5/model.0.tar'}
+03/16/2021 12:48:17 PM episode1: 1
+03/16/2021 12:48:17 PM cleaned paths
+03/16/2021 12:48:17 PM {0: '/tmp/tmpoe93krt5/model.0.tar'}
+03/16/2021 12:48:17 PM episode1: 2
+03/16/2021 12:48:17 PM cleaned paths
+03/16/2021 12:48:17 PM {0: '/tmp/tmpoe93krt5/model.0.tar'}
+03/16/2021 12:48:17 PM episode1: 3
+03/16/2021 01:10:41 PM Started
+03/16/2021 01:10:41 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 3, 'goal_mean_100_reward': 475}
+03/16/2021 01:10:41 PM cleaned paths
+03/16/2021 01:10:41 PM {0: '/tmp/tmpvvk4g_18/model.0.tar'}
+03/16/2021 01:10:41 PM episode1: 1
+03/16/2021 01:10:41 PM cleaned paths
+03/16/2021 01:10:41 PM {0: '/tmp/tmpvvk4g_18/model.0.tar'}
+03/16/2021 01:10:41 PM episode1: 2
+03/16/2021 01:10:41 PM cleaned paths
+03/16/2021 01:10:41 PM {0: '/tmp/tmpvvk4g_18/model.0.tar'}
+03/16/2021 01:10:41 PM episode1: 3
+03/16/2021 01:15:24 PM Started
+03/16/2021 01:16:09 PM Started
+03/16/2021 01:16:09 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/16/2021 01:16:09 PM cleaned paths
+03/16/2021 01:16:09 PM {0: '/tmp/tmprtphbrge/model.0.tar'}
+03/16/2021 01:16:09 PM episode1: 1
+03/16/2021 01:18:42 PM Started
+03/16/2021 01:18:50 PM Started
+03/16/2021 01:18:50 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/16/2021 01:18:50 PM cleaned paths
+03/16/2021 01:18:50 PM {0: '/tmp/tmpxfgn6yvr/model.0.tar'}
+03/16/2021 01:18:50 PM episode1: 1
+03/16/2021 01:22:31 PM Started
+03/16/2021 01:22:31 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/16/2021 01:22:31 PM cleaned paths
+03/16/2021 01:22:31 PM {0: '/tmp/tmp5mwlora3/model.0.tar'}
+03/16/2021 01:22:31 PM episode1: 1
+03/16/2021 01:23:35 PM Started
+03/16/2021 01:23:35 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/16/2021 01:23:35 PM cleaned paths
+03/16/2021 01:23:35 PM {0: '/tmp/tmpboffnzme/model.0.tar'}
+03/16/2021 01:23:35 PM episode1: 1
+03/16/2021 01:24:02 PM Started
+03/16/2021 01:24:02 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/16/2021 01:24:02 PM cleaned paths
+03/16/2021 01:24:02 PM {0: '/tmp/tmpi8qm9dm7/model.0.tar'}
+03/16/2021 01:24:02 PM episode1: 1
+03/16/2021 01:25:37 PM Started
+03/16/2021 01:25:37 PM {'env_name': 'CartPole-v1', 'gamma': 1.0, 'max_minutes': 20, 'max_episodes': 1, 'goal_mean_100_reward': 475}
+03/16/2021 01:25:37 PM cleaned paths
+03/16/2021 01:25:37 PM {0: '/tmp/tmphi9keav3/model.0.tar'}
+03/16/2021 01:25:37 PM episode1: 1
