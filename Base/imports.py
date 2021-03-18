@@ -25,10 +25,13 @@ import subprocess
 import io
 import base64
 import json
+import cv2
+from xvfbwrapper import Xvfb
+
 
 
 
 log.basicConfig(format='%(asctime)s %(message)s', 
-                    datefmt='%m/%d/%Y %I:%M:%S %p', filename='myapp.log', level=log.INFO)
+                    datefmt='%m/%d %I:%M%p >', filename='myapp.log', level=log.INFO)
 
 log.info('Started')
