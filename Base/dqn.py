@@ -26,6 +26,9 @@ class DQN():
         self.image_memory = None
         self.rem_steps = 4
 
+        #stats
+        self.action_track = {'explore':0, 'exploit':0}
+
 
     def optimize_model(self, experiences):
         states, actions, rewards, next_states, is_terminals = experiences
@@ -143,9 +146,18 @@ class DQN():
                 if is_terminal:
                     gc.collect()
                     break
+                if self.training_strategy.exploratory_action_taken:
+                    self.action_track['explore'] += 1
+                else:
+                    self.action_track['exploit'] += 1
             self.save_checkpoint(episode-1, self.online_model)
+            
+            log.info(f'episilon value: {self.training_strategy.epsilon}')
+            log.info(f'action track: \n{self.action_track}')
             log.info(f'buffer Size: {len(self.replay_buffer)}')
+            print(self.action_track)
         log.info(f'Checkpoint dir: {self.checkpoint_dir}')
+
         return result
 
     def get_cleaned_checkpoints(self, n_checkpoints=5):
