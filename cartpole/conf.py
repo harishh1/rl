@@ -1,9 +1,9 @@
-from_pixel = False
+from_pixel = True
 environment_settings ={
-        'env_name' : 'CartPole-v1',
+        'env_name' : 'CartPole-v0',
         'gamma': 1.00,
-        'max_minutes': 20,
-        'max_episodes': 5,
+        'max_minutes': 10,
+        'max_episodes': 4,
         'goal_mean_100_reward': 475
         }
 
@@ -14,10 +14,10 @@ min_epsilon=0.3
 decay_steps=20000
 max_size=50000
 if from_pixel:
-    batch_size= 1
+    batch_size= 2
 else:
-    batch_size= 64
-n_warmup_batches = 5
+    batch_size= 10
+n_warmup_batches = 1
 update_target_every_steps = 10
 value_optimizer_lr = 0.0005
 

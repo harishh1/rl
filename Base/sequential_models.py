@@ -104,7 +104,8 @@ class Cnn_model(nn.Module):
             x = torch.tensor(x, 
                             device = self.device,
                             dtype = torch.float32)
-        x = x.unsqueeze(0)
+        if len(x.shape) == 3:
+            x = x.unsqueeze(0)
         return x
 
     def numpy_float_to_device(self, variable):

@@ -28,17 +28,20 @@ class DQN():
 
         #stats
         self.action_track = {'explore':0, 'exploit':0}
-
+        self.st_ep_reward = None
+        self.st_ep_steps = None 
 
     def optimize_model(self, experiences):
         states, actions, rewards, next_states, is_terminals = experiences
-        batch_size = len(is_terminals)
+
         max_a_q_sp = self.target_model(next_states).detach().max(1)[0].unsqueeze(1)
         target_q_sa = rewards + (self.gamma * max_a_q_sp * (1 - is_terminals))
+
         q_sa = self.online_model(states).gather(1, actions)
 
         td_error = q_sa - target_q_sa
         value_loss = td_error.pow(2).mul(0.5).mean()
+        #log.info(f'Loss: {value_loss}')
         self.value_optimizer.zero_grad()
         value_loss.backward()
         self.value_optimizer.step()
@@ -46,16 +49,28 @@ class DQN():
     def interaction_step(self, state, env):
         action = self.training_strategy.select_action(self.online_model, state)
         new_state, reward, is_terminal, info = env.step(action)
+
+        
+
+
+        is_truncated = 'TimeLimit.truncated' in info and info['TimeLimit.truncated']
+        is_failure = is_terminal and not is_truncated
+
+
+        tmp_state = state
+        tmp_new_state = new_state
+        
         if self.from_pixel:
             s = self.getImage(env)
             new_state = self.update_image_memory(s)
 
-        is_truncated = 'TimeLimit.truncated' in info and info['TimeLimit.truncated']
-        is_failure = is_terminal and not is_truncated
-        experience = (state, action, reward,new_state, float(is_failure))
-        self.replay_buffer.store(experience)        
-        return new_state, is_terminal
+            tmp_state = np.expand_dims(state, axis=0)
+            tmp_new_state = np.expand_dims(new_state, axis=0)
+        
 
+        experience = (tmp_state, action, reward,tmp_new_state, float(is_failure))
+        self.replay_buffer.store(experience)        
+        return new_state, is_terminal, reward
     def update_network(self):
         for target, online in zip(self.target_model.parameters(), self.online_model.parameters()):
             target.data.copy_(online.data) 
@@ -91,6 +106,8 @@ class DQN():
         self.from_pixel = from_pixel
         self.getImage = get_image_fn
 
+        self.st_ep_reward = np.zeros(max_episodes)
+
         env = self.make_env_fn(**self.make_env_kargs, seed=self.seed)
         torch.manual_seed(self.seed) ; np.random.seed(self.seed); random.seed(self.seed)
         log.info(f'ENV: {self.make_env_kargs["env_name"]}')
@@ -100,6 +117,7 @@ class DQN():
         if from_pixel:
             log.info(f'Learning from PIXEL')
             env.reset()
+            env.close()
             nA = env.action_space.n
             nS = self.getImage(env).shape 
             self.image_memory = np.zeros((self.rem_steps, nS[0], nS[1]))
@@ -113,30 +131,36 @@ class DQN():
         self.online_model = self.value_model_fn(nS, nA)
         self.update_network()
 
-        log.info(f'\n\nModel Summary: \n{self.target_model.eval()}')
+        log.info(f'\n\nModel Summary: \n{summary(self.target_model, (4,160,240))}')
         self.value_optimizer = self.value_optimizer_fn(self.online_model, self.value_optimizer_lr)
         self.replay_buffer = self.replay_buffer_fn()
         self.training_strategy = self.training_strategy_fn()
         self.evaluation_strategy = self.evaluation_strategy_fn()
         
         log.info(f'Replay buffer:\n  Size: {self.replay_buffer.max_size}\n  Batch size: {self.replay_buffer.batch_size} \n')        
+        log.info(f'Decay Epsilon steps: {self.training_strategy.decay_steps}')        
         result = np.empty((max_episodes, 5))
         result[:] = np.nan
-
+        
+        
         log.info(f'Max Episodes: {max_episodes}')
-        for episode in range(1, max_episodes + 1):
+        training_start_ts = time.time()
+        for episode in range(max_episodes):
             episode_start = time.time()
             
-            log.info(f'episode# : {episode}')
+            log.info(f'\n\nepisode# : {episode}')
 
             state, is_terminal = self.reset(env), False
             for step in count():
-                state, is_terminal = self.interaction_step(state, env)
+                state, is_terminal, reward = self.interaction_step(state, env)
+                self.st_ep_reward[episode] += reward 
 
                 min_samples = self.replay_buffer.batch_size * self.n_warmup_batches
                 if len(self.replay_buffer) > min_samples:
                     experiences = self.replay_buffer.sample()
                     self.temp = experiences
+
+                    #converting np to tensor
                     experiences = self.online_model.load(experiences)
                     self.optimize_model(experiences)
                 
@@ -151,14 +175,28 @@ class DQN():
                 else:
                     self.action_track['exploit'] += 1
             self.save_checkpoint(episode-1, self.online_model)
+
+
+
+            #stats
+
+            self.payload = {}
+            self.payload['time'] = np.zeros(max_episodes)
+            elapsed = time.time() - episode_start
+            self.payload['time'][episode] = elapsed         
             
-            log.info(f'episilon value: {self.training_strategy.epsilon}')
+            log.info(f'Total Reward: {self.st_ep_reward[episode]}')
+            #log.info(f'episilon value: {self.training_strategy.epsilon}')
             log.info(f'action track: \n{self.action_track}')
-            log.info(f'buffer Size: {len(self.replay_buffer)}')
-            print(self.action_track)
+            #log.info(f'buffer Size: {len(self.replay_buffer)}')
+            log.info(f'Episode Time: {elapsed}')
+            
+
+        self.payload['reward'] = self.st_ep_reward
+        log.info(f'Training Time: {(time.time() - training_start_ts)/ 60} mins')
         log.info(f'Checkpoint dir: {self.checkpoint_dir}')
 
-        return result
+        return self.payload
 
     def get_cleaned_checkpoints(self, n_checkpoints=5):
         # try: 
@@ -199,7 +237,6 @@ class DQN():
 
     def demo_progression(self, title='{} Agent progression', max_n_videos=5):
         env = self.make_env_fn(**self.make_env_kargs, monitor_mode='evaluation', render=True, record=True)
-
         checkpoint_paths = self.get_cleaned_checkpoints()
         for i in sorted(checkpoint_paths.keys()):
             self.online_model.load_state_dict(torch.load(checkpoint_paths[i],map_location=torch.device('cpu')))
@@ -210,7 +247,7 @@ class DQN():
                             title=title.format(self.__class__.__name__),
                             subtitle_eps=sorted(checkpoint_paths.keys()),
                             max_n_videos=max_n_videos)
-        del env
+        #del env
         return HTML(data=data)
 
     def save_checkpoint(self, episode_idx, model):
