@@ -91,10 +91,10 @@ class DQN():
 
     
     def train(self, make_env_fn, make_env_kargs, seed, gamma, 
-              max_minutes, max_episodes, goal_mean_100_reward, from_pixel, get_image_fn = False):
-        training_start, last_debug_time = time.time(), float('-inf')
+              max_minutes, max_episodes, goal_mean_100_reward, from_pixel, get_image_fn = False,cp_name =  ''):
 
-        self.checkpoint_dir = tempfile.mkdtemp()
+        # self.checkpoint_dir = tempfile.mkdtemp()
+        self.checkpoint_dir = cp_name
         
         log.info('\n\n\n\n')
         log.info('Training started')
@@ -105,13 +105,18 @@ class DQN():
         self.gamma = gamma
         self.from_pixel = from_pixel
         self.getImage = get_image_fn
+        self.payload = {}
+
 
         self.st_ep_reward = np.zeros(max_episodes)
+        self.payload['time'] = np.zeros(max_episodes)
+
 
         env = self.make_env_fn(**self.make_env_kargs, seed=self.seed)
         torch.manual_seed(self.seed) ; np.random.seed(self.seed); random.seed(self.seed)
         log.info(f'ENV: {self.make_env_kargs["env_name"]}')
         log.info(f'Seed :{seed}')
+        
 
         #CNN
         if from_pixel:
@@ -131,7 +136,7 @@ class DQN():
         self.online_model = self.value_model_fn(nS, nA)
         self.update_network()
 
-        log.info(f'\n\nModel Summary: \n{summary(self.target_model, (4,160,240))}')
+        log.info(f'\n\nModel Summary: \n{self.target_model.eval()}')
         self.value_optimizer = self.value_optimizer_fn(self.online_model, self.value_optimizer_lr)
         self.replay_buffer = self.replay_buffer_fn()
         self.training_strategy = self.training_strategy_fn()
@@ -179,9 +184,6 @@ class DQN():
 
 
             #stats
-
-            self.payload = {}
-            self.payload['time'] = np.zeros(max_episodes)
             elapsed = time.time() - episode_start
             self.payload['time'][episode] = elapsed         
             

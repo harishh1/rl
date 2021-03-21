@@ -119,3 +119,25 @@ def get_gif_html(env_videos, title, subtitle_eps=None, max_n_videos=4):
                     else subtitle_eps[meta['episode_id']])
         strm += html_tag.format(prefix + sufix, encoded.decode('ascii'))
     return strm
+
+def create_res_dir(current_dir,conf_json, from_pixel):
+    res = current_dir.joinpath('results',) #create res dir
+    res.mkdir(parents=True, exist_ok=True)
+    list_dir = [x for x in res.iterdir() if x.is_dir()] #list dir
+
+    max_dir_val = max([int(m.name.split('_')[1]) for m in list_dir] or [0]) #max val of dir
+
+    dir_name = ('pixel' if from_pixel else 'value') + '_' + str(max_dir_val+1)
+    d = res.joinpath(dir_name)
+    d.mkdir()
+    cp_dir = d.joinpath('checkpoints')
+    cp_dir.mkdir(parents=True, exist_ok=True)
+
+    with open(str(d.joinpath('conf.json')), 'w', encoding='utf-8') as f:
+        f.write(conf_json)
+
+    return d,cp_dir
+
+
+
+
