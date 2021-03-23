@@ -121,8 +121,8 @@ def get_gif_html(env_videos, title, subtitle_eps=None, max_n_videos=4):
     return strm
 
 def create_res_dir(current_dir,conf_json, from_pixel):
-    res = current_dir.joinpath('results',) #create res dir
-    res.mkdir(parents=True, exist_ok=True)
+    res = current_dir.joinpath('results',) 
+    res.mkdir(parents=True, exist_ok=True)#create res dir
     list_dir = [x for x in res.iterdir() if x.is_dir()] #list dir
 
     max_dir_val = max([int(m.name.split('_')[1]) for m in list_dir] or [0]) #max val of dir

@@ -12,6 +12,7 @@ class EGreedyExpStrategy():
         self.epsilons = self.epsilons * (init_epsilon - min_epsilon) + min_epsilon
         self.t = 0
         self.exploratory_action_taken = None
+        self.rand_values = []
 
     def _epsilon_update(self):# remaining values after the decay
         self.epsilon = \
@@ -23,16 +24,17 @@ class EGreedyExpStrategy():
         self.exploratory_action_taken = False
         with torch.no_grad():
             q_values = model(state).detach().cpu().data.numpy().squeeze()
-
-        if np.random.rand() > self.epsilon:
+        rand = np.random.rand()
+        if  rand > self.epsilon:
             action = np.argmax(q_values)
         else:
             action = np.random.randint(len(q_values))
-
+            self.exploratory_action_taken = True
+        self.rand_values.append(rand)
         self._epsilon_update()
-        self.exploratory_action_taken = action != np.argmax(q_values)
-        return action
+        #self.exploratory_action_taken = action != np.argmax(q_values)
 
+        return action
 class GreedyStrategy():
     def __init__(self):
         self.exploratory_action_taken = False

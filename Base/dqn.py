@@ -97,7 +97,10 @@ class DQN():
         self.checkpoint_dir = cp_name
         
         log.info('\n\n\n\n')
+        log.info('sleeping 7 sec') #
+        time.sleep(7)
         log.info('Training started')
+    
 
         self.make_env_fn = make_env_fn
         self.make_env_kargs = make_env_kargs
@@ -149,6 +152,7 @@ class DQN():
         
         
         log.info(f'Max Episodes: {max_episodes}')
+        
         training_start_ts = time.time()
         for episode in range(max_episodes):
             episode_start = time.time()
@@ -179,7 +183,8 @@ class DQN():
                     self.action_track['explore'] += 1
                 else:
                     self.action_track['exploit'] += 1
-            self.save_checkpoint(episode-1, self.online_model)
+            if episode % 50 == 0: 
+                self.save_checkpoint(episode, self.online_model)
 
 
 
@@ -195,8 +200,13 @@ class DQN():
             
 
         self.payload['reward'] = self.st_ep_reward
+        self.payload['training_actions'] = self.action_track
+        self.payload['epsilons'] = self.training_strategy.epsilons
+        self.payload['rand_values'] = self.training_strategy.rand_values
+        self.payload['total_time_steps'] = self.training_strategy.t
         log.info(f'Training Time: {(time.time() - training_start_ts)/ 60} mins')
         log.info(f'Checkpoint dir: {self.checkpoint_dir}')
+        
 
         return self.payload
 
