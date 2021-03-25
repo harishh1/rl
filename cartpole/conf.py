@@ -1,20 +1,21 @@
 conf = {
-"from_pixel": False,
-"SEEDS": [12],
+"from_pixel": True,
+"SEEDS": [34],
 "model_hidden_layers": [512,128],
 "init_epsilon": 1.0,
-"min_epsilon":0.3,
-"decay_steps":20000,
-"max_size":50000,
-"batch_size": 2,
+"min_epsilon":0.1,
+"decay_steps":2000,
+"epsilon_decay_ratio": .0005,
+"max_size":10000,
+"batch_size": 32,
 "n_warmup_batches": 1,
 "update_target_every_steps": 10,
-"value_optimizer_lr": 0.0005,
+"value_optimizer_lr": 0.00025,
 "environment_settings":{
-        'env_name' : 'CartPole-v0',
-        'gamma': 1.00,
+        'env_name' : 'CartPole-v1',
+        'gamma': .95,
         'max_minutes': 10,
-        'max_episodes': 4,
+        'max_episodes': 1000,
         'goal_mean_100_reward': 475
         }
 }
@@ -31,3 +32,4 @@ batch_size = conf['batch_size']
 n_warmup_batches = conf['n_warmup_batches']
 update_target_every_steps = conf['update_target_every_steps']
 value_optimizer_lr = conf['value_optimizer_lr']
+epsilon_decay_ratio = conf['epsilon_decay_ratio']
