@@ -133,7 +133,7 @@ def create_res_dir(current_dir,conf_json, from_pixel):
     cp_dir = d.joinpath('checkpoints')
     cp_dir.mkdir(parents=True, exist_ok=True)
 
-    with open(str(d.joinpath('conf.json')), 'w', encoding='utf-8') as f:
+    with open(str(d.joinpath(dir_name+'_conf.json')), 'w', encoding='utf-8') as f:
         f.write(conf_json)
 
     return d,cp_dir
