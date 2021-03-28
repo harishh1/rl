@@ -58,11 +58,11 @@ class Cnn_model(nn.Module):
         super(Cnn_model, self).__init__()
         h, w = Ns[2:]
         self.conv1 = nn.Conv2d(4, 64, kernel_size=4, stride=2)
-        self.bn1 = nn.BatchNorm2d(64)
+        #self.bn1 = nn.BatchNorm2d(64)
         self.conv2 = nn.Conv2d(64, 64, kernel_size=4, stride=2)
-        self.bn2 = nn.BatchNorm2d(64)
+        #self.bn2 = nn.BatchNorm2d(64)
         self.conv3 = nn.Conv2d(64, 64, kernel_size=3, stride=2)
-        self.bn3 = nn.BatchNorm2d(64)
+        #self.bn3 = nn.BatchNorm2d(64)
 
 
         # Number of Linear input connections depends on output of conv2d layers
@@ -88,14 +88,13 @@ class Cnn_model(nn.Module):
     # during optimization. Returns tensor([[left0exp,right0exp]...]).
     def forward(self, state):
         x = self._format(state)
-        x = F.relu(self.bn1(self.conv1(x)))
-        x = F.relu(self.bn2(self.conv2(x)))
-        x = F.relu(self.bn3(self.conv3(x)))
+        x = F.relu(self.conv1(x))
+        x = F.relu(self.conv2(x))
+        x = F.relu(self.conv3(x))
         x = F.relu(self.head(x.view(x.size(0), -1))) #flattening
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
         x = self.fc4(x)
-
         return x 
 
     def _format(self, state):
