@@ -97,8 +97,8 @@ class DQN():
         self.checkpoint_dir = cp_name
         
         log.info('\n\n\n\n')
-        log.info('sleeping 7 sec') #
-        time.sleep(7)
+        log.info('sleeping 13 sec') #
+        time.sleep(5)
         log.info('Training started')
     
 
@@ -113,6 +113,7 @@ class DQN():
 
         self.st_ep_reward = np.zeros(max_episodes)
         self.payload['time'] = np.zeros(max_episodes)
+        self.payload['steps'] = np.zeros(max_episodes)
 
 
         env = self.make_env_fn(**self.make_env_kargs, seed=self.seed)
@@ -153,6 +154,7 @@ class DQN():
         
         log.info(f'Max Episodes: {max_episodes}')
         
+        time.sleep(10)
         training_start_ts = time.time()
         for episode in range(max_episodes):
             episode_start = time.time()
@@ -191,6 +193,7 @@ class DQN():
             #stats
             elapsed = time.time() - episode_start
             self.payload['time'][episode] = elapsed         
+            self.payload['steps'][episode] = step         
             
             log.info(f'Total Reward: {self.st_ep_reward[episode]}')
             #log.info(f'episilon value: {self.training_strategy.epsilon}')
