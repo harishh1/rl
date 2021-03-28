@@ -6,3 +6,4 @@ cartpole/nn_cartpole.py
 cartpole/agent_progression.html
 cartpole/myapp.log
 cartpole/nn_cartpole.py
+.vscode/settings.json

@@ -30,6 +30,7 @@ from xvfbwrapper import Xvfb
 from torchsummary import summary
 import pathlib
 import json
+from sys import getsizeof
 
 
 
