@@ -7,3 +7,7 @@ cartpole/agent_progression.html
 cartpole/myapp.log
 cartpole/nn_cartpole.py
 .vscode/settings.json
+cartpole/nn_cartpole.py
+cartpole/nn_cartpole.py
+cartpole/env_image.ipynb
+mario/checkpoints/

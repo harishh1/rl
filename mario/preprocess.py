@@ -1,5 +1,5 @@
 from m_packages import *
-
+ 
 class SkipFrame(gym.Wrapper):
     def __init__(self, env, skip):
         super().__init__(env)
@@ -49,3 +49,4 @@ class ResizeObservation(gym.ObservationWrapper):
         )
         observation = transforms(observation).squeeze(0)
         return observation
+
