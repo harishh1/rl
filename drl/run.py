@@ -1,18 +1,11 @@
 from packages import *
-from preprocess import *
+from env import Drl
+from neural_nets import Drl
 
-env = gym.make('CartPole-v1')
-im = env.reset()
-next_state, reward, done, info = env.step(0)
-print(next_state.shape)
-
-env = SkipFrame(env, skip=4)
-env = GrayScaleObservation(env)
-env = ResizeObservation(env, shape=84)
-env = FrameStack(env, num_stack=4)
-
-print(env.step(0))
-
+cartpole = Drl('CartPole-v0')
+print(cartpole.state_dims)
+print(cartpole.action_dims)
+print(cartpole)
 
 
 
