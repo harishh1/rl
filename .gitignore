@@ -11,3 +11,4 @@ cartpole/nn_cartpole.py
 cartpole/nn_cartpole.py
 cartpole/env_image.ipynb
 mario/checkpoints/
+drl_main/results/

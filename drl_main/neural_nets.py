@@ -5,7 +5,7 @@ class Std_net(nn.Module):
     def __init__(self, input_dim, output_dim):
         super().__init__()
         c, h, w = input_dim
-        convw, convh =conv(w, h)
+        convw, convh =self.conv_out(w, h)
         self.online = nn.Sequential(
             nn.Conv2d(in_channels=c, out_channels=32, kernel_size=8, stride=4),
             nn.ReLU(),
@@ -30,10 +30,10 @@ class Std_net(nn.Module):
         elif model == "target":
             return self.target(input)
 
-    def conv_out(w, h):
+    def conv_out(self,w, h):
         def conv2d_size_out(size, kernel_size = 5, stride = 2):
             return (size - (kernel_size - 1) - 1) // stride  + 1
-        convw = conv2d_size_out(conv2d_size_out(conv2d_size_out(w,8),4),3)
-        convh = conv2d_size_out(conv2d_size_out(conv2d_size_out(h,8),4),3)
+        convw = conv2d_size_out(conv2d_size_out(conv2d_size_out(w,8,4),4,2),3,1)
+        convh = conv2d_size_out(conv2d_size_out(conv2d_size_out(h,8,4),4,2),3,1)
         return convw, convh
 

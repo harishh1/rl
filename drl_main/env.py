@@ -8,8 +8,10 @@ step, reset functions of env
 
 class Env():
     def __init__(self, env_name):
+        print('this is env')
         self.env_name = env_name
         self.env = gym.make(env_name)
+        self.reset()
     def step(self,action):
         next_state, reward, done, _ = self.env.step(action)
         next_state = self.get_screen()
@@ -19,8 +21,8 @@ class Env():
         self.env.reset()
         self.org_shape = self.env.render(mode='rgb_array').shape
         s = self.get_screen()
-        self.state_dims = s.shape
-        self.action_dims = self.env.action_space.n
+        self.state_dim = s.shape
+        self.action_dim = self.env.action_space.n
         return s
 
     def gray_scale(self,observation):
