@@ -1,0 +1,7 @@
+sudo apt-get update
+sudo apt install python3-pip
+
+torch --> https://pytorch.org/
+gym --> pip3 install gym
+
+

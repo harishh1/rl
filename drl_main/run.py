@@ -2,7 +2,7 @@ from main import *
 from logger import MetricLogger
 
 env_name = 'CartPole-v1' 
-episodes = 40
+episodes = 100
 log_every_ep = 20
 
 
@@ -48,5 +48,4 @@ for e in range(episodes):
     logger.log_episode()
 
     if e % 20 == 0:
-        print(logger.ep_rewards)
         logger.record(episode = e, epsilon = env.exploration_rate, step = env.curr_step)

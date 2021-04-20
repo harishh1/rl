@@ -112,6 +112,8 @@ class Drl(Drl):
         self.gamma = 0.9
 
     def td_estimate(self, state, action):
+        print('d')
+        print(self.net(state, model="online"))
         current_Q = self.net(state, model="online")[
             np.arange(0, self.batch_size), action
         ]  # Q_online(s,a)
@@ -161,9 +163,9 @@ class Drl(Drl):
 class Drl(Drl):
     def __init__(self,env_name):
         super().__init__(env_name)
-        self.burnin = 1e4  # min. experiences before training
+        self.burnin = 100  # min. experiences before training
         self.learn_every = 3  # no. of experiences between updates to Q_online
-        self.sync_every = 1e4  # no. of experiences between Q_target & Q_online sync
+        self.sync_every = 10  # no. of experiences between Q_target & Q_online sync
 
     def learn(self):
         if self.curr_step % self.sync_every == 0:

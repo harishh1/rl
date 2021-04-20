@@ -12,10 +12,12 @@ import gym
 from gym.spaces import Box
 from gym.wrappers import FrameStack
 
-# NES Emulator for OpenAI Gym
-from nes_py.wrappers import JoypadSpace
+# # NES Emulator for OpenAI Gym
+# from nes_py.wrappers import JoypadSpace
 
-# Super Mario environment for OpenAI Gym
-import gym_super_mario_bros
+# # Super Mario environment for OpenAI Gym
+# import gym_super_mario_bros
+
+
 import time
 from matplotlib import pyplot as plt
