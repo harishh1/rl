@@ -1,4 +1,6 @@
+import collections
 from packages import *
+from conf import *
 
 '''
 Creates Env
@@ -10,17 +12,22 @@ class Env():
     def __init__(self, env_name):
         print('this is env')
         self.env_name = env_name
+        self.image_memory = collections.deque(maxlen= conf['image_memory_len'])
         self.env = gym.make(env_name)
         self.reset()
     def step(self,action):
         next_state, reward, done, _ = self.env.step(action)
-        next_state = self.get_screen()
+        self.image_memory.appendleft(self.get_screen())
+        next_state = np.array(self.image_memory) 
         return next_state, reward, done, _
 
     def reset(self):
         self.env.reset()
-        self.org_shape = self.env.render(mode='rgb_array').shape
-        s = self.get_screen()
+        self.org_shape = self.env.render(mode='rgb_array').shape #used for the transformation of image
+        for i in range(conf['image_memory_len']):
+            self.image_memory.append(self.get_screen())
+
+        s = np.array(self.image_memory)
         self.state_dim = s.shape
         self.action_dim = self.env.action_space.n
         return s
@@ -45,4 +52,4 @@ class Env():
             self.gray_scale(
                 self.env.render(mode='rgb_array')
                 )
-            )
+            ).squeeze().numpy()

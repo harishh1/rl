@@ -1,9 +1,10 @@
 from main import *
 from logger import MetricLogger
+from conf import *
 
-env_name = 'CartPole-v1' 
-episodes = 1000
-log_every_ep = 20
+env_name = conf['env_name']
+episodes = conf['episodes']
+log_every_ep = conf['log_every_ep']
 
 
 use_cuda = torch.cuda.is_available()
@@ -47,5 +48,5 @@ for e in range(episodes):
             break
     logger.log_episode()
 
-    if e % 10 == 0:
+    if e % log_every_ep == 0:
         logger.record(episode = e, epsilon = env.exploration_rate, step = env.curr_step)

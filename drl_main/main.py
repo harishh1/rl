@@ -1,15 +1,14 @@
 from packages import *
 from env import Env
 from neural_nets import Std_net
+from conf import *
 
 #main
 class Drl(Env):
     def __init__(self,env_name):
         super().__init__(env_name)
         self.save_dir = 'results'
-        print(self.state_dim)
-
-
+        
 #act
 class Drl(Drl):
     def __init__(self,env_name):
@@ -23,8 +22,8 @@ class Drl(Drl):
             self.net = self.net.to(device="cuda")
 
         self.exploration_rate = 1
-        self.exploration_rate_decay = 0.99999975
-        self.exploration_rate_min = 0.1
+        self.exploration_rate_decay = conf['exploration_rate_decay']
+        self.exploration_rate_min = conf['exploration_rate_min']
         self.curr_step = 0
 
         self.save_every = 5e5  # no. of experiences between saving Net
@@ -65,8 +64,9 @@ class Drl(Drl):
 class Drl(Drl):
     def __init__(self,env_name):
         super().__init__(env_name)
-        self.memory = deque(maxlen=10000)
-        self.batch_size = 32
+        
+        self.memory = deque(maxlen=conf['memory'])
+        self.batch_size = conf['batch_size']
 
     def cache(self, state, next_state, action, reward, done):
         """
@@ -82,18 +82,18 @@ class Drl(Drl):
         state = state.__array__()
         next_state = next_state.__array__()
 
-        if self.use_cuda:
-            state = torch.tensor(state).cuda()
-            next_state = torch.tensor(next_state).cuda()
-            action = torch.tensor([action]).cuda()
-            reward = torch.tensor([reward]).cuda()
-            done = torch.tensor([done]).cuda()
-        else:
-            state = torch.tensor(state)
-            next_state = torch.tensor(next_state)
-            action = torch.tensor([action])
-            reward = torch.tensor([reward])
-            done = torch.tensor([done])
+        # if self.use_cuda:
+        #     state = torch.tensor(state).cuda()
+        #     next_state = torch.tensor(next_state).cuda()
+        #     action = torch.tensor([action]).cuda()
+        #     reward = torch.tensor([reward]).cuda()
+        #     done = torch.tensor([done]).cuda()
+        # else:
+        #     state = torch.tensor(state)
+        #     next_state = torch.tensor(next_state)
+        #     action = torch.tensor([action])
+        #     reward = torch.tensor([reward])
+        #     done = torch.tensor([done])
 
         self.memory.append((state, next_state, action, reward, done,))
 
@@ -102,6 +102,23 @@ class Drl(Drl):
         Retrieve a batch of experiences from memory
         """
         batch = random.sample(self.memory, self.batch_size)
+
+        t_batch = []
+        for state, next_state, action, reward, done in batch:
+            if self.use_cuda:
+                state = torch.tensor(state).cuda()
+                next_state = torch.tensor(next_state).cuda()
+                action = torch.tensor([action]).cuda()
+                reward = torch.tensor([reward]).cuda()
+                done = torch.tensor([done]).cuda()
+            else:
+                state = torch.tensor(state)
+                next_state = torch.tensor(next_state)
+                action = torch.tensor([action])
+                reward = torch.tensor([reward])
+                done = torch.tensor([done])
+            t_batch.append((state, next_state, action, reward, done))
+        batch = t_batch
         state, next_state, action, reward, done = map(torch.stack, zip(*batch))
         return state, next_state, action.squeeze(), reward.squeeze(), done.squeeze()
 
@@ -109,7 +126,7 @@ class Drl(Drl):
 class Drl(Drl):
     def __init__(self,env_name):
         super().__init__(env_name)
-        self.gamma = 0.9
+        self.gamma = conf['gamma']
 
     def td_estimate(self, state, action):
         current_Q = self.net(state, model="online")[
@@ -130,7 +147,7 @@ class Drl(Drl):
 class Drl(Drl):
     def __init__(self,env_name):
         super().__init__(env_name)
-        self.optimizer = torch.optim.Adam(self.net.parameters(), lr=0.00025)
+        self.optimizer = torch.optim.Adam(self.net.parameters(), lr=conf['lr'])
         self.loss_fn = torch.nn.SmoothL1Loss()
 
     def update_Q_online(self, td_estimate, td_target):
@@ -161,9 +178,9 @@ class Drl(Drl):
 class Drl(Drl):
     def __init__(self,env_name):
         super().__init__(env_name)
-        self.burnin = 300  # min. experiences before training
-        self.learn_every = 3  # no. of experiences between updates to Q_online
-        self.sync_every = 500  # no. of experiences between Q_target & Q_online sync
+        self.burnin = conf['burnin']  # min. experiences before training
+        self.learn_every = conf['learn_every']  # no. of experiences between updates to Q_online
+        self.sync_every = conf['sync_every']  # no. of experiences between Q_target & Q_online sync
 
     def learn(self):
         if self.curr_step % self.sync_every == 0:
@@ -203,7 +220,7 @@ class Drl(Drl):
                 action_idx = torch.argmax(action_values, axis=1).item()
 
                 next_state,reward, done, _ = self.env.step(action_idx)
-                state = next_state
+                state = next_stateE
                 rs.append(reward)
                 if done:
                     break;
