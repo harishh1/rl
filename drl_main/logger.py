@@ -9,10 +9,10 @@ class MetricLogger:
                 f"{'MeanLength':>15}{'MeanLoss':>15}{'MeanQValue':>15}"
                 f"{'TimeDelta':>15}{'Time':>20}\n"
             )
-        self.mean_ep_reward_plot = save_dir / "reward_plot.jpg"
-        self.mean_ep_length_plot = save_dir / "length_plot.jpg"
-        self.mean_ep_loss_plot = save_dir / "loss_plot.jpg"
-        self.mean_ep_q_plot = save_dir / "q_plot.jpg"
+        self.mean_ep_reward_plot = save_dir / "reward_plot.png"
+        self.mean_ep_length_plot = save_dir / "length_plot.png"
+        self.mean_ep_loss_plot = save_dir / "loss_plot.png"
+        self.mean_ep_q_plot = save_dir / "q_plot.png"
 
         self.mean_ep_reward = []
         self.mean_ep_length = []

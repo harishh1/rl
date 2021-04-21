@@ -17,7 +17,7 @@ class Drl(Drl):
 
         self.use_cuda = torch.cuda.is_available()
 
-        # Mario's DNN to predict the most optimal action - we implement this in the Learn section
+        # DNN to predict the most optimal action - we implement this in the Learn section
         self.net = Std_net(self.state_dim, self.action_dim).float()
         if self.use_cuda:
             self.net = self.net.to(device="cuda")
@@ -27,7 +27,7 @@ class Drl(Drl):
         self.exploration_rate_min = 0.1
         self.curr_step = 0
 
-        self.save_every = 5e5  # no. of experiences between saving Mario Net
+        self.save_every = 5e5  # no. of experiences between saving Net
 
     def act(self, state):
         """
@@ -36,7 +36,7 @@ class Drl(Drl):
     Inputs:
     state(LazyFrame): A single observation of the current state, dimension is (state_dim)
     Outputs:
-    action_idx (int): An integer representing which action Mario will perform
+    action_idx (int): An integer representing which action will perform
     """
         # EXPLORE
         if np.random.rand() < self.exploration_rate:
@@ -65,7 +65,7 @@ class Drl(Drl):
 class Drl(Drl):
     def __init__(self,env_name):
         super().__init__(env_name)
-        self.memory = deque(maxlen=100000)
+        self.memory = deque(maxlen=10000)
         self.batch_size = 32
 
     def cache(self, state, next_state, action, reward, done):
@@ -112,8 +112,6 @@ class Drl(Drl):
         self.gamma = 0.9
 
     def td_estimate(self, state, action):
-        print('d')
-        print(self.net(state, model="online"))
         current_Q = self.net(state, model="online")[
             np.arange(0, self.batch_size), action
         ]  # Q_online(s,a)
@@ -151,21 +149,21 @@ class Drl(Drl):
         super().__init__(env_name)
     def save(self):
         save_path = (
-            self.save_dir / f"mario_net_{int(self.curr_step // self.save_every)}.chkpt"
+            self.save_dir / f"net_{int(self.curr_step // self.save_every)}.chkpt"
         )
         torch.save(
             dict(model=self.net.state_dict(), exploration_rate=self.exploration_rate),
             save_path,
         )
-        print(f"MarioNet saved to {save_path} at step {self.curr_step}")
+        print(f"Net saved to {save_path} at step {self.curr_step}")
 
 #all together
 class Drl(Drl):
     def __init__(self,env_name):
         super().__init__(env_name)
-        self.burnin = 100  # min. experiences before training
+        self.burnin = 300  # min. experiences before training
         self.learn_every = 3  # no. of experiences between updates to Q_online
-        self.sync_every = 10  # no. of experiences between Q_target & Q_online sync
+        self.sync_every = 500  # no. of experiences between Q_target & Q_online sync
 
     def learn(self):
         if self.curr_step % self.sync_every == 0:
@@ -193,3 +191,23 @@ class Drl(Drl):
         loss = self.update_Q_online(td_est, td_tgt)
 
         return (td_est.mean().item(), loss)
+    
+    def evaluate(self, num_ep=1):
+
+        rs = []
+        for i in range(num_ep):
+            state = self.env.reset()
+        
+            while True:
+                action_values = self.net(state, model="online")
+                action_idx = torch.argmax(action_values, axis=1).item()
+
+                next_state,reward, done, _ = self.env.step(action_idx)
+                state = next_state
+                rs.append(reward)
+                if done:
+                    break;
+        return np.mean(rs), np.std(rs)
+                
+
+    
