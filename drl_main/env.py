@@ -33,8 +33,6 @@ class Env():
         return s
 
     def gray_scale(self,observation):
-        #[H, W, C] to [C, H, W]
-        observation = np.transpose(observation, (2,0,1))
         observation = torch.tensor(observation.copy(), dtype = torch.float)
         transform = T.Grayscale()
         observation = transform(observation)
@@ -47,13 +45,32 @@ class Env():
         observation = transform(observation)
         return observation
 
+    def get_cart_location(self, screen_width):
+        world_width = self.env.x_threshold * 2
+        scale = screen_width / world_width
+        return int(self.env.state[0] * scale + screen_width / 2.0)  # MIDDLE OF CART
+
+
     def get_screen(self):
-        img = self.env.render(mode='rgb_array')
-        screen_height, screen_width, _ = img.shape
-        img = img[int(screen_height*.4):int(screen_height*.8),:]
-        
+        screen = self.env.render(mode='rgb_array').transpose((2, 0, 1))
+
+        # Cart is in the lower half, so strip off the top and bottom of the screen
+        _ , screen_height, screen_width = screen.shape
+        screen = screen[:, int(screen_height*0.4):int(screen_height * 0.8)]
+        view_width = int(screen_width * 0.6)
+        cart_location = self.get_cart_location(screen_width)
+        if cart_location < view_width // 2:
+            slice_range = slice(view_width)
+        elif cart_location > (screen_width - view_width // 2):
+            slice_range = slice(-view_width, None)
+        else:
+            slice_range = slice(cart_location - view_width // 2,
+                                cart_location + view_width // 2)
+        # Strip off the edges, so that we have a square image centered on a cart
+        screen = screen[:, :, slice_range]
+
         return self.resize(
             self.gray_scale(
-                img
+                screen
                 )
             ).squeeze().numpy()
