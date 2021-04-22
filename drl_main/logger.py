@@ -1,4 +1,5 @@
 from packages import *
+from conf import *
 
 class MetricLogger:
     def __init__(self, save_dir):
@@ -63,11 +64,11 @@ class MetricLogger:
         self.curr_ep_loss_length = 0
 
     def record(self, episode, epsilon, step):
-
-        self.mean_ep_reward.append( np.round(np.mean(self.ep_rewards[-20:]), 3))
-        self.mean_ep_length.append( np.round(np.mean(self.ep_lengths[-20:]), 3))
-        self.mean_ep_loss.append( np.round(np.mean(self.ep_avg_losses[-20:]), 3))
-        self.mean_ep_q.append( np.round(np.mean(self.ep_avg_qs[-20:]), 3))
+        last_n_rec = conf['log_every_ep']
+        self.mean_ep_reward.append( np.round(np.mean(self.ep_rewards[-last_n_rec:]), 3))
+        self.mean_ep_length.append( np.round(np.mean(self.ep_lengths[-last_n_rec:]), 3))
+        self.mean_ep_loss.append( np.round(np.mean(self.ep_avg_losses[-last_n_rec:]), 3))
+        self.mean_ep_q.append( np.round(np.mean(self.ep_avg_qs[-last_n_rec:]), 3))
 
         last_record_time = self.record_time
         self.record_time = time.time()
@@ -82,6 +83,6 @@ class MetricLogger:
             )
 
         for metric in ["mean_ep_reward", "mean_ep_length", "mean_ep_loss", "mean_ep_q"]:
-            plt.plot(np.array(range(len(getattr(self, f"{metric}"))))*20, getattr(self, f"{metric}"))
+            plt.plot(np.array(range(len(getattr(self, f"{metric}"))))*last_n_rec, getattr(self, f"{metric}"))
             plt.savefig(getattr(self, f"{metric}_plot"))
             plt.clf()

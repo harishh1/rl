@@ -48,8 +48,12 @@ class Env():
         return observation
 
     def get_screen(self):
+        img = self.env.render(mode='rgb_array')
+        screen_height, screen_width, _ = img.shape
+        img = img[int(screen_height*.4):int(screen_height*.8),:]
+        
         return self.resize(
             self.gray_scale(
-                self.env.render(mode='rgb_array')
+                img
                 )
             ).squeeze().numpy()

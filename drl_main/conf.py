@@ -1,21 +1,21 @@
 conf = {
 
 #LEARNING
-"burnin":500,  # min. experiences before training
+"burnin":1000,  # min. experiences before training
 "learn_every":1,  # no. of experiences between updates to Q_online
-"sync_every": 50, # no. of experiences between Q_target & Q_online sync
+"sync_every": 1500, # no. of experiences between Q_target & Q_online sync
 "lr":0.00025,
 
-"exploration_rate_decay": .9999,
+"exploration_rate_decay": .99995,
 "exploration_rate_min": .01,
 # ENV
 "env_name":'CartPole-v1',
 "episodes":1000,
-"log_every_ep":20,
+"log_every_ep":10,
 "image_memory_len":4,
 
 #REPLAY MEMORY
-"memory" : 3000,
+"memory" : 4000,
 "batch_size": 32,
 "gamma": 0.95
 }

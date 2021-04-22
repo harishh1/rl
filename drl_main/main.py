@@ -220,7 +220,7 @@ class Drl(Drl):
                 action_idx = torch.argmax(action_values, axis=1).item()
 
                 next_state,reward, done, _ = self.env.step(action_idx)
-                state = next_stateE
+                state = next_state
                 rs.append(reward)
                 if done:
                     break;
