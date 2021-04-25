@@ -6,8 +6,8 @@ conf = {
 "min_epsilon":0.1,
 "decay_steps":2000,
 "epsilon_decay_ratio": .0005,
-"max_size":10000,
-"batch_size": 32,
+"max_size":3000,
+"batch_size": 128,
 "n_warmup_batches": 1,
 "update_target_every_steps": 10,
 "value_optimizer_lr": 0.00025,
@@ -15,7 +15,7 @@ conf = {
         'env_name' : 'CartPole-v1',
         'gamma': .95,
         'max_minutes': 10,
-        'max_episodes': 1000,
+        'max_episodes': 150,
         'goal_mean_100_reward': 475
         }
 }

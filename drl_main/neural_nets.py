@@ -1,7 +1,7 @@
 from packages import *
 
 
-class Std_net(nn.Module):
+class Conv_net(nn.Module):
     def __init__(self, input_dim, output_dim):
         super().__init__()
         c, h, w = input_dim
@@ -40,4 +40,29 @@ class Std_net(nn.Module):
         convw = conv2d_size_out(conv2d_size_out(conv2d_size_out(w,5,3),4,2),3,1)
         convh = conv2d_size_out(conv2d_size_out(conv2d_size_out(h,5,3),4,2),3,1)
         return convw, convh
+
+class Values_net(nn.Module):
+    def __init__(self, input_dim, output_dim):
+        super().__init__()
+        self.online = nn.Sequential(
+            nn.Linear(input_dim[0], 512),
+            nn.ReLU(),
+            nn.Linear(512, 256),
+            nn.ReLU(),
+            nn.Linear(256, 64),
+            nn.ReLU(),
+            nn.Linear(64, output_dim)
+        )
+        self.target = copy.deepcopy(self.online)
+        for p in self.target.parameters():
+            p.requires_grad = False
+
+    def forward(self, input, model):
+        input = input.float()
+        if model == "online":
+            return self.online(input)
+
+        elif model == "target":
+            return self.target(input)
+
 

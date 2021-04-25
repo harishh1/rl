@@ -1,6 +1,6 @@
 from packages import *
 from env import Env
-from neural_nets import Std_net
+from neural_nets import Conv_net, Values_net
 from conf import *
 
 #main
@@ -17,7 +17,11 @@ class Drl(Drl):
         self.use_cuda = torch.cuda.is_available()
 
         # DNN to predict the most optimal action - we implement this in the Learn section
-        self.net = Std_net(self.state_dim, self.action_dim).float()
+        if self.pixel:
+            self.net = Conv_net(self.state_dim, self.action_dim).float()
+        else:
+            self.net = Values_net(self.state_dim, self.action_dim).float()
+
         if self.use_cuda:
             self.net = self.net.to(device="cuda")
 
@@ -53,8 +57,12 @@ class Drl(Drl):
             action_idx = torch.argmax(action_values, axis=1).item()
 
         # decrease exploration_rate
-        self.exploration_rate *= self.exploration_rate_decay
-        self.exploration_rate = max(self.exploration_rate_min, self.exploration_rate)
+        self.exploration_rate = self.exploration_rate_min + \
+            (1 - self.exploration_rate_min) * \
+                np.exp(-self.exploration_rate_decay * self.ep)
+
+        #self.exploration_rate *= self.exploration_rate_decay
+        self.exploration_rate = max(self.exploration_rate, self.exploration_rate)
 
         # increment step
         self.curr_step += 1
@@ -95,7 +103,9 @@ class Drl(Drl):
         #     reward = torch.tensor([reward])
         #     done = torch.tensor([done])
 
-        self.memory.append((state, next_state, action, reward, done,))
+        self.memory.append((state, next_state, action, reward, done))
+        if done:
+            self.ep += 1
 
     def recall(self):
         """
@@ -147,8 +157,9 @@ class Drl(Drl):
 class Drl(Drl):
     def __init__(self,env_name):
         super().__init__(env_name)
-        self.optimizer = torch.optim.Adam(self.net.parameters(), lr=conf['lr'])
-        self.loss_fn = torch.nn.SmoothL1Loss()
+        self.optimizer = torch.optim.RMSprop(self.net.parameters(), lr=conf['lr'])
+        #self.loss_fn = torch.nn.SmoothL1Loss()
+        self.loss_fn = torch.nn.MSELoss()
 
     def update_Q_online(self, td_estimate, td_target):
         loss = self.loss_fn(td_estimate, td_target)
@@ -181,9 +192,10 @@ class Drl(Drl):
         self.burnin = conf['burnin']  # min. experiences before training
         self.learn_every = conf['learn_every']  # no. of experiences between updates to Q_online
         self.sync_every = conf['sync_every']  # no. of experiences between Q_target & Q_online sync
+        self.ep = 1
 
     def learn(self):
-        if self.curr_step % self.sync_every == 0:
+        if self.ep % self.sync_every == 0:
             self.sync_Q_target()
 
         if self.curr_step % self.save_every == 0:
