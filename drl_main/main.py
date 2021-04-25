@@ -2,12 +2,14 @@ from packages import *
 from env import Env
 from neural_nets import Conv_net, Values_net
 from conf import *
-
+from exploration import Exploration
 #main
 class Drl(Env):
     def __init__(self,env_name):
         super().__init__(env_name)
         self.save_dir = 'results'
+
+        self.exp = Exploration()
         
 #act
 class Drl(Drl):
@@ -26,8 +28,6 @@ class Drl(Drl):
             self.net = self.net.to(device="cuda")
 
         self.exploration_rate = 1
-        self.exploration_rate_decay = conf['exploration_rate_decay']
-        self.exploration_rate_min = conf['exploration_rate_min']
         self.curr_step = 0
 
         self.save_every = 5e5  # no. of experiences between saving Net
@@ -56,13 +56,10 @@ class Drl(Drl):
             action_values = self.net(state, model="online")
             action_idx = torch.argmax(action_values, axis=1).item()
 
-        # decrease exploration_rate
-        self.exploration_rate = self.exploration_rate_min + \
-            (1 - self.exploration_rate_min) * \
-                np.exp(-self.exploration_rate_decay * self.ep)
 
-        #self.exploration_rate *= self.exploration_rate_decay
-        self.exploration_rate = max(self.exploration_rate, self.exploration_rate)
+        if self.curr_step > conf['burnin']:
+            self.exploration_rate = self.exp.decay(self.ep, self.curr_step)
+        
 
         # increment step
         self.curr_step += 1
@@ -89,19 +86,6 @@ class Drl(Drl):
         """
         state = state.__array__()
         next_state = next_state.__array__()
-
-        # if self.use_cuda:
-        #     state = torch.tensor(state).cuda()
-        #     next_state = torch.tensor(next_state).cuda()
-        #     action = torch.tensor([action]).cuda()
-        #     reward = torch.tensor([reward]).cuda()
-        #     done = torch.tensor([done]).cuda()
-        # else:
-        #     state = torch.tensor(state)
-        #     next_state = torch.tensor(next_state)
-        #     action = torch.tensor([action])
-        #     reward = torch.tensor([reward])
-        #     done = torch.tensor([done])
 
         self.memory.append((state, next_state, action, reward, done))
         if done:

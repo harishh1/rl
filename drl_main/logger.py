@@ -11,10 +11,10 @@ class MetricLogger:
                 f"{'TimeDelta':>15}{'Time':>20}\n"
             )
         self.mean_ep_reward_plot = save_dir / "reward_plot.png"
-        self.mean_ep_length_plot = save_dir / "length_plot.png"
+        #self.mean_ep_length_plot = save_dir / "length_plot.png"
         self.mean_ep_loss_plot = save_dir / "loss_plot.png"
         self.mean_ep_q_plot = save_dir / "q_plot.png"
-
+        self.ep_explr_plot =  save_dir / "exploration.png"
         self.mean_ep_reward = []
         self.mean_ep_length = []
         self.mean_ep_loss = []
@@ -26,6 +26,7 @@ class MetricLogger:
         self.ep_lengths = []
         self.ep_avg_losses = []
         self.ep_avg_qs = []
+        self.ep_explr = []
 
         # Current episode metric
         self.init_episode()
@@ -69,6 +70,7 @@ class MetricLogger:
         self.mean_ep_length.append( np.round(np.mean(self.ep_lengths[-last_n_rec:]), 3))
         self.mean_ep_loss.append( np.round(np.mean(self.ep_avg_losses[-last_n_rec:]), 3))
         self.mean_ep_q.append( np.round(np.mean(self.ep_avg_qs[-last_n_rec:]), 3))
+        self.ep_explr.append(epsilon)
 
         last_record_time = self.record_time
         self.record_time = time.time()
@@ -82,7 +84,7 @@ class MetricLogger:
                 f"{datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S'):>20}\n"
             )
 
-        for metric in ["mean_ep_reward", "mean_ep_length", "mean_ep_loss", "mean_ep_q"]:
+        for metric in ["mean_ep_reward", "mean_ep_loss", "mean_ep_q","ep_explr"]:
             plt.plot(np.array(range(len(getattr(self, f"{metric}"))))*last_n_rec, getattr(self, f"{metric}"))
             plt.savefig(getattr(self, f"{metric}_plot"))
             plt.clf()
