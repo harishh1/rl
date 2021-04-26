@@ -7,9 +7,10 @@ from exploration import Exploration
 class Drl(Env):
     def __init__(self,env_name):
         super().__init__(env_name)
-        self.save_dir = 'results'
-
         self.exp = Exploration()
+
+        self.seed = conf["seed"]
+        self.save_dir = conf['save_dir']
         
 #act
 class Drl(Drl):
@@ -30,7 +31,7 @@ class Drl(Drl):
         self.exploration_rate = 1
         self.curr_step = 0
 
-        self.save_every = 5e5  # no. of experiences between saving Net
+        self.save_every = conf['save_every']  # no. of experiences between saving Net
 
     def act(self, state):
         """
@@ -58,7 +59,7 @@ class Drl(Drl):
 
 
         if self.curr_step > conf['burnin']:
-            self.exploration_rate = self.exp.decay(self.ep, self.curr_step)
+            self.exploration_rate = self.exp.decay()
         
 
         # increment step
@@ -90,6 +91,9 @@ class Drl(Drl):
         self.memory.append((state, next_state, action, reward, done))
         if done:
             self.ep += 1
+            if self.ep % self.save_every == 0:
+                print(self.ep)
+                self.save()
 
     def recall(self):
         """
@@ -161,13 +165,13 @@ class Drl(Drl):
         super().__init__(env_name)
     def save(self):
         save_path = (
-            self.save_dir / f"net_{int(self.curr_step // self.save_every)}.chkpt"
+            self.save_dir / f"chk/{conf['seed']}_net_{int(self.ep // self.save_every)}.chkpt"
         )
         torch.save(
             dict(model=self.net.state_dict(), exploration_rate=self.exploration_rate),
             save_path,
         )
-        print(f"Net saved to {save_path} at step {self.curr_step}")
+        print(f"Net saved to {save_path} at step {self.ep}")
 
 #all together
 class Drl(Drl):
@@ -181,9 +185,6 @@ class Drl(Drl):
     def learn(self):
         if self.ep % self.sync_every == 0:
             self.sync_Q_target()
-
-        if self.curr_step % self.save_every == 0:
-            self.save()
 
         if self.curr_step < self.burnin:
             return None, None

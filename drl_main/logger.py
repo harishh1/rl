@@ -2,10 +2,14 @@ from packages import *
 from conf import *
 
 class MetricLogger:
-    def __init__(self, save_dir):
+    def __init__(self, save_dir, seed):
         self.save_log = save_dir / "log"
+        seeds = conf['seeds']
+        if len(seeds):s = f"Seed: {seed}, Pos: {seeds.index(seed)+1} out of {len(seeds)}\n" 
+        else: s= 'Running on a random seed'
         with open(self.save_log, "w") as f:
             f.write(
+                f"{s} \n"
                 f"{'Episode':>8}{'Step':>8}{'Epsilon':>10}{'MeanReward':>15}"
                 f"{'MeanLength':>15}{'MeanLoss':>15}{'MeanQValue':>15}"
                 f"{'TimeDelta':>15}{'Time':>20}\n"
@@ -15,6 +19,9 @@ class MetricLogger:
         self.mean_ep_loss_plot = save_dir / "loss_plot.png"
         self.mean_ep_q_plot = save_dir / "q_plot.png"
         self.ep_explr_plot =  save_dir / "exploration.png"
+
+        self.save_file = save_dir / f'res_arrays/{seed}_res_arr.npy'
+
         self.mean_ep_reward = []
         self.mean_ep_length = []
         self.mean_ep_loss = []
@@ -88,3 +95,9 @@ class MetricLogger:
             plt.plot(np.array(range(len(getattr(self, f"{metric}"))))*last_n_rec, getattr(self, f"{metric}"))
             plt.savefig(getattr(self, f"{metric}_plot"))
             plt.clf()
+    def save(self):
+        res = {
+            'reward': self.ep_rewards
+        }
+        np.save(self.save_file, res)
+        print(self.save_file.name)

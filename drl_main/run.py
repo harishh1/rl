@@ -2,21 +2,33 @@ from main import *
 from logger import MetricLogger
 from conf import *
 
-env_name = conf['env_name']
-episodes = conf['episodes']
-log_every_ep = conf['log_every_ep']
-
-
 use_cuda = torch.cuda.is_available()
 print(f'Using cuda: {use_cuda} \n')
 
+
+env_name = conf['env_name']
+episodes = conf['episodes']
+log_every_ep = conf['log_every_ep']
+seeds = conf["seeds"]
+if len(seeds) == 0: seeds = [np.random.randint(1,100)]
+
 save_dir = Path("results") / env_name /datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
 save_dir.mkdir(parents=True)
-env = Drl(env_name)
 
-seeds = [23, 46, 89, 11, 2]
+chk_dir = save_dir / 'chk'
+chk_dir.mkdir()
+
+arr_dir = save_dir / 'res_arrays'
+arr_dir.mkdir()
+
+
 for seed in seeds:
-    logger = MetricLogger(save_dir)
+    
+    conf["seed"] = seed
+    conf["save_dir"] = save_dir
+    env = Drl(env_name)
+    logger = MetricLogger(save_dir, seed)
+
     for e in range(episodes):
         
         state = env.reset()
@@ -50,3 +62,4 @@ for seed in seeds:
 
         if e % log_every_ep == 0:
             logger.record(episode = e, epsilon = env.exploration_rate, step = env.curr_step)
+    logger.save()
